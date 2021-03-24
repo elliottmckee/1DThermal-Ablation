@@ -20,3 +20,7 @@ octave-workspace
 
 # Simulink autosave extension
 .autosave
+
+
+# Ignore these Outdated Folders
+AblationDocs
