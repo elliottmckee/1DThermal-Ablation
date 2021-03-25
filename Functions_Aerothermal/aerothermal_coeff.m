@@ -24,7 +24,7 @@ FUTURE:
     -Try looping through this until flow properties  achieve specific tolerance
     -IDK ask USLU??
     -I think current approach is fine. Calculating Re with edge values,
-    then correcting the following ones. Maybe don't need to check
+    then correcting the following properties. Maybe don't need to check
     turbulence twice
 %}
 

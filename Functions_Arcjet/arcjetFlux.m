@@ -29,7 +29,7 @@ Cp  = interp1(Abl.cpLUTab.Var1, Abl.cpLUTab.Var2, Twall, 'linear', 'extrap');
 %Assuming T0 for T_inf
 q_hw = eta * q_cw * (1 - (Cp*Twall)/(Htot))   -   Sim.sigma * Sim.emis * (Twall^4 - Sim.T0^4);
 
-%Check to override negative heatfluxes
+%Check to override negative heatfluxes (not sure if still needed)
 if(q_hw < 0)
    q_hw = 0;
 end

@@ -2,6 +2,13 @@ function checkStability(Sim, Wall, Abl, dt, i)
 %CHECKSTABILITY Performs the Stability Criterion Check given in Ulsu
 %Performs check on surface/exposed element
 
+%{
+NOTES: 
+-From Hifire testing, this check is  pretty spot on. If it throws an error
+here, the results were boofed. If not, they were fine. Up to within .001s
+tolerance, from my guessing and checking. 
+%}
+
 %% Pull Required Values of Surface Element
 h = Sim.hVec(i);
 

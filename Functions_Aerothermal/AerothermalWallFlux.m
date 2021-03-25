@@ -1,8 +1,6 @@
 function [Abl, Sim] = AerothermalWallFlux(Sim, Wall, Abl, Flight, t, dt, i)
-%HiFireWallFlux aims to calculate the Hot Wall Heat flux associated with
-%the HiFire Verification case given in Uslu
-%Non-Ablative
-%Aerothermal Heating Verification
+%AerothermalWallFlux implements the aerothermal heating model
+% given in Ulsu
 
 
 %% Get Atmospheric/FreeStream Properties at t, based on flight profile
@@ -48,7 +46,7 @@ else
 end
 
 
-%If no ablative, use structural wall as TWall, do not correct for blowing
+%If no ablative, use structural wall as exposed wall, do not correct for blowing
 if(isempty(Abl))
     
     %% Calculate Heat Transfer Coefficient
@@ -60,7 +58,7 @@ if(isempty(Abl))
     checkStability(Sim, Wall, Abl, dt, i)
     
     
-%If ablative, use ablative outer layer for Wall temperature
+%If ablative, use ablative material for exposed wall. Correct for blowing
 else
     
     %% Calculate Heat Transfer Coefficient

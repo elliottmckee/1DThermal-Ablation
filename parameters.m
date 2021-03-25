@@ -26,13 +26,13 @@ OUTPUTS:
     - Flight: Struct containing flight trajectory data
 
 NOTES: 
-- Make Specific Material Functions for Initialization of specific materials
+- Must make Specific Material Functions for Initialization of specific materials
 %} 
 
 
 %% SIM-GENERAL
 %Flags: 
-Sim.thermalModel = heatFluxModel; % Set to 'Arcjet' for Arcjet heating Verification Case as opposed to 'Aerothermal'. 
+Sim.thermalModel = heatFluxModel; % Set to 'Arcjet' for Arcjet heating Verification Case as opposed to default  'Aerothermal'. 
 
 %Nosecone Angle
 Sim.theta = deg2rad(7); % NOSE CONE HALF ANGLE (7deg for Hifire Minor Axis)
@@ -68,6 +68,8 @@ Sim.hLUT =  [hLUT.T, hLUT.h]; %[]
 
 
 %% WALL STRUCTURE
+% Sets Wall type/properties based on wallType function input. 
+
 if(strcmp(wallType, 'Al6061'))
     %Aluminum 6061 Properties pulled from Matweb: http://www.matweb.com/search/DataSheet.aspx?MatGUID=b8d536e0b9b54bd7b69e4124d8f1d20a
     Wall.rho = 2700; %[kg/m^3] Density
@@ -77,6 +79,7 @@ if(strcmp(wallType, 'Al6061'))
     %Geometric
     Wall.delta = 0.02; %[m] Wall Thickness
     
+%If no Structural wall defined
 elseif(strcmp(wallType, 'NA'))
     Wall = [];
 else
@@ -86,6 +89,9 @@ end
 
 
 %% ABLATIVE PROPERTIES
+% Sets Ablative Insulation type/properties based on wallType function input
+
+
 %PICA Properties (Lot of extra properties left lying around. Definitely Check these if used)
 if (strcmp(ablativeType, 'PICA'))
     
@@ -133,16 +139,23 @@ else
 end
 
 %% FLIGHT DATA
+%Pulls flight data, organizes into structs
+%I Think this is currently using an OpenRocket simulation file....?
+
+%Read in HiFire Data
 if strcmp(simFilepath, 'HiFire')
-    %Read in HiFire Data
     [Flight.t, Flight.M, Flight.v, Flight.alt] = ConvertHiFire();
 
+%Read in HiFire5B Data
 elseif strcmp(simFilepath, 'HiFire5B')
-    %Read in HiFire5B Data
     [Flight.t, Flight.M, Flight.v, Flight.alt] = ConvertHiFire5B();
     
+%No flight profile (used for Arcjet verification case)
+elseif strcmp(simFilepath, 'NA')
+    Flight = [];
+    
+%Default: Read in General Flight data
 else
-    %Read in General Flight data
     [Flight.t, Flight.M, Flight.v, Flight.alt] = flightData(simFilepath);
 end
 

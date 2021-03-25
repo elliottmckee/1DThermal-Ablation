@@ -65,7 +65,7 @@ Add Interface Modelling
 
 
 CURRENTLY:
-- Verify Aerothermal Ablation!
+- Verify Aerothermal+Ablation!
 - ASSUMES CONICAL GEOMETRY (can make variable) REMOVED
 - IMPLEMENT STABILITY CRITERION CHECK
 - CHECK DENSITY CHANGE W/ TEMP? (ARRHENIUS)
@@ -99,29 +99,30 @@ addpath('Functions_Pyrolysis')
 
 %% INITIALIZE PARAMETER/DATA STRUCTS
 %Inputs
-x = .400; %[m] Downstream X location (200mm for HiFire, 400-650-850 for HF-5B. See Ulsu)
-depthProbe_Temp = []; %[0.0222 0.0172 0.0098]; %[m] Temperature Probe Locations. Leave empty to ignore
+x = .400; %[m] Downstream X location (Doesn't matter for Arcjet, 200mm for HiFire, 400,650,850mm for HF-5B. See Ulsu)
+depthProbe_Temp = [0.0222 0.0172 0.0098]; %[m] Ablative Layer Temperature Probe Locations. Leave empty to ignore
 
 %Initialize Parameter/Data Structs
 %                                 parameters(location, WallType, AblativeType, simFilePath, depthProbe_Temp, heatingType, intial Temp)
-[Sim, Wall, Abl, Flight] = parameters(x, 'Al6061', 'NA',  'HiFire', depthProbe_Temp, 'Aerothermal', 280);    %Hifire Parameters
 %[Sim, Wall, Abl, Flight] = parameters(x, 'NA', 'PICA',  'NA', depthProbe_Temp, 'Arcjet', 280);    %Arcjet Verify
-%[Sim, Wall, Abl, Flight] = parameters(x, 'NA', 'PICA',  'HiFire', depthProbe_Temp, 'Aerothermal', 280);    
+[Sim, Wall, Abl, Flight] = parameters(x, 'Al6061', 'NA',  'HiFire', depthProbe_Temp, 'Aerothermal', 280);    %Hifire Parameters
+%[Sim, Wall, Abl, Flight] = parameters(x, 'NA', 'PICA',  'HiFire', depthProbe_Temp, 'Aerothermal', 280); %Other   
 
 
 %% MAIN INTEGRATION LOOP
-t = 0:.004:215; %time vector
+%t = 0:.001:15; %time vector (Arcjet testcase)
+t = 0:.004:215; %time vector (Hifire, normal)
 %t = 510:.001:520; %time vector (Hifire-5B)
+
 %Integration loop call
 [Sim, Abl, Wall] = timeIntegration(t, Sim, Wall, Abl, Flight);
 
 
- 
-% %HiFire-5B VERIFICATION STUFF
+% %HiFire-5B VERIFICATION TESTCASE
 % [Sim, Wall, Abl, Flight] = parameters(.400, 'Al6061', 'NA',  'HiFire5B', depthProbe_Temp, 'Aerothermal', 368);    %Hifire5B Parameters
 % %Integration loop call
 % [Sim400, Abl400, Wall400] = timeIntegration(t, Sim, Wall, Abl, Flight);
-
+% 
 % [Sim, Wall, Abl, Flight] = parameters(.600, 'Al6061', 'NA',  'HiFire5B', depthProbe_Temp, 'Aerothermal', 361.2);    %Hifire5B Parameters
 % %Integration loop call
 % [Sim650, Abl650, Wall650] = timeIntegration(t, Sim, Wall, Abl, Flight);

@@ -1,7 +1,7 @@
 function [Sim, Abl, Wall] = timeIntegration(t, Sim, Wall, Abl, Flight)
 %timeIntegration Handles the forward time-stepping, finite difference
 %integration for the wall defined in parameters.m. This should be able to
-%handle Ablative, Structural, and Ablative+Structural wall components.
+%handle Ablative, Structural, and Ablative+Structural wall configurations.
 
 %For Ablative, calculates the rate of change of material thickness, element temp,
 %element density, and elemental component densities.
@@ -16,8 +16,6 @@ Handles the Initialization of the output vectors, and the main time loop
 for the forward time integration.
 
 NOTES:
-    
-    
 %}
 
 
@@ -66,6 +64,7 @@ for i = 1:length(t)-1
     
     
     %% Get Temperature Rate of Change
+    %Actually calcualtes the finite difference heat conduction through wall
     if(isempty(Wall))
         %If no wall, Ablative Only
         [Sim, Abl] = tempChange_abl(Sim, Abl, i, dt);
