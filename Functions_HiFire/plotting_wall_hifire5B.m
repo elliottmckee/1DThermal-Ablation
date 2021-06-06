@@ -29,33 +29,33 @@ plot(t, Wall400.TVec(1,:), 'r')        %Hot Wall 400
 %Hifire5B Data
 plot(Hf400.Time, Hf400.Temp, 'r--', 'LineWidth',1) %HiFire Flight Data
 
-grid minor
+%grid minor
 title('Wall Temperatures')
 xlabel('Time (s)')
 ylabel('Temp (K)')
-legend('Sim-400mm', 'HF5B-400mm', 'location','Southeast')
+legend('Sim-400mm', 'HF5B-400mm', 'location','Northwest')
 
 
 subplot(1,3,2)
 hold on 
 plot(t, Wall650.TVec(1,:), 'b')        %Hot Wall 650
 plot(Hf650.Time, Hf650.Temp, 'b--', 'LineWidth',1) %HiFire Flight Data
-grid minor
+%grid minor
 title('Wall Temperatures')
 xlabel('Time (s)')
 ylabel('Temp (K)')
-legend('Sim-650mm', 'HF5B-650mm', 'location','Southeast')
+legend('Sim-650mm', 'HF5B-650mm', 'location','Northwest')
 
 subplot(1,3,3)
 hold on 
 plot(t, Wall800.TVec(1,:), 'm')        %Hot Wall 800
 plot(Hf800.Time, Hf800.Temp, 'm--', 'LineWidth',1) %HiFire Flight Data
 
-grid minor
+%grid minor
 title('Wall Temperatures')
 xlabel('Time (s)')
 ylabel('Temp (K)')
-legend('Sim-800mm', 'HF5B-800mm', 'location','Southeast')
+legend('Sim-800mm', 'HF5B-800mm', 'location','Northwest')
 
 
 %Heat Transfer and Recovery Temperature Plots

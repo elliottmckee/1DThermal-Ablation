@@ -107,9 +107,7 @@ Abl.tempProbe = depthProbe_Temp;
 %Number of Species Present for Arrhenious
 Abl.nSpec_ab = 3;
 
-%Abl.rho0 = 1462.5; % [kg/m^3] ABLATIVE INITIAL MATERIAL DENSITY
 Abl.rho0 = 264.1; % [kg/m^3] ABLATIVE INITIAL MATERIAL DENSITY
-%Abl.rho0_comp = [324 973 1560]; % [229 972 160]; % [kg/m^3] ABLATIVE MATERIAL COMPONENT DENSITIES
 Abl.rho_v_comp =  [229 972 160]; % [kg/m^3] ABLATIVE MATERIAL COMPONENT  VIRGIN DENSITIES
 Abl.rho_c_comp = [0 792 160]; % [kg/m^3] Ablative Component Char densities
 
@@ -118,12 +116,8 @@ Abl.B = [1.4e4 4.48e9 0]; %[1/s] Pre-Exponential Constants
 Abl.E_R = [8555.6  20444.4 0]; %[K] E/R Activation Energies/R
 Abl.N = [3 3 0]; %[-] Reaction Orders
 
-%Abl.Gamma = .372; %Resin Fraction
-%Abl.Gamma = .0646; %Resin Fraction
-Abl.Gamma = 0.1; %Resin Fraction ALTERED TO MATCH SIMSEK (LIKELY INCORRECT)
-
-%Cp_ab = 1972; % [J/(kg*K)] ABLATIVE MATERIAL SPECIFIC HEAT
-%k_ab =  0.078; % [W/mK] ABLATIVE THERMAL CONDUCTIVITY (ROUGH)
+%Resin Fraction ALTERED TO MATCH SIMSEK (LIKELY INCORRECT)
+Abl.Gamma = 0.1; 
 
 %Ablative Material Prop Lookup Tables
 Abl.cpLUTab = readtable('_CpvTemp.csv'); %[J/KgK] Cp vs T

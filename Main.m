@@ -99,7 +99,7 @@ addpath('Functions_Pyrolysis')
 
 %% INITIALIZE PARAMETER/DATA STRUCTS
 %Inputs
-x = .400; %[m] Downstream X location (Doesn't matter for Arcjet, 200mm for HiFire, 400,650,850mm for HF-5B. See Ulsu)
+x = .200; %[m] Downstream X location (Doesn't matter for Arcjet, 200mm for HiFire, 400,650,850mm for HF-5B. See Ulsu)
 depthProbe_Temp = [0.0222 0.0172 0.0098]; %[m] Ablative Layer Temperature Probe Locations. Leave empty to ignore
 
 %Initialize Parameter/Data Structs
@@ -117,8 +117,8 @@ t = 0:.004:215; %time vector (Hifire, normal)
 %Integration loop call
 [Sim, Abl, Wall] = timeIntegration(t, Sim, Wall, Abl, Flight);
 
-
-% %HiFire-5B VERIFICATION TESTCASE
+% 
+% % %HiFire-5B VERIFICATION TESTCASE
 % [Sim, Wall, Abl, Flight] = parameters(.400, 'Al6061', 'NA',  'HiFire5B', depthProbe_Temp, 'Aerothermal', 368);    %Hifire5B Parameters
 % %Integration loop call
 % [Sim400, Abl400, Wall400] = timeIntegration(t, Sim, Wall, Abl, Flight);
@@ -152,6 +152,50 @@ end
 if(~isempty(Abl))
 plotting_abl_arcjet(t, Sim, Abl, Recess_tot) %Arcjet Verification Plotting
 end
+
+
+
+% Additional Plotting Section
+
+%% Temperature Distribution at specific times
+%Get indices corresponding to specific times
+plotInd1 = find( t == 0 )
+plotInd2 = find( t == 5 )
+plotInd3= find( t == 10 )
+plotInd4 = find( t == 20 )
+
+%Get y vector for discretized points 
+y = linspace(0, Wall.delta, Sim.N)
+
+figure()
+hold on
+
+plot(y, Wall.TVec(:,plotInd1), 'Color', [0,0,1])
+plot(y, Wall.TVec(:,plotInd2), 'Color', [0,0,0.5])
+plot(y, Wall.TVec(:,plotInd3), 'Color', [0.5,0,0])
+plot(y, Wall.TVec(:,plotInd4), 'Color', [1,0,0])
+
+title('Through Wall Temperature Distribution Plots w/ Time')
+xlabel('Through Wall Distance (m)')
+ylabel('Temperatuere (K)')
+legend('0 Seconds', '5 Seconds', '10 Seconds', '20 Seconds')
+
+
+%% Surface Temperature w/ Time
+
+figure()
+hold on
+
+plot(t, Wall.TVec(1,:), 'r')
+plot(t, Wall.TVec(end,:), 'b')
+
+
+title('Wall Temperatures vs. Time')
+xlabel('Time (s)')
+ylabel('Temperatuere (K)')
+legend('Hot Wall Temp', 'Interior Wall Temp')
+
+
 
 
 
