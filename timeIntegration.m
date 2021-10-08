@@ -9,7 +9,7 @@ function [Sim, Abl, Wall] = timeIntegration(t, Sim, Wall, Abl, Flight)
 %For structural, just calculates the element temperatures pretty much.
 
 %ODE45 DOESNT WORK FOR THIS SINCE RECURSION OF Q_HW terms
-%ACUTALLY CAN LIKELY DO NOW, SINCE NO MORE RECURSION ISSUE
+    %ACUTALLY CAN LIKELY DO NOW, SINCE NO MORE RECURSION ISSUE
 
 %{
 Handles the Initialization of the output vectors, and the main time loop
@@ -74,7 +74,7 @@ for i = 1:length(t)-1
         [Sim, Wall] = tempChange_wall(Sim, Wall, i, dt);
         
     else
-        error('ADD BOFA MODELING HERE!!!!!!!!!')
+        error('ADD BOTH MODELING HERE')
     end
     
     
