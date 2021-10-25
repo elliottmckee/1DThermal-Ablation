@@ -31,7 +31,17 @@ FUTURE:
 
 
 %% Interpolate Air Props at Local Temp
+
+%Viscosity
+if T_L > 3000
+    warning('T_L for interpolation is greater than 3000K, where viscosity starts becoming dependant on pressure')
+end
 Mu_L = interp1(Sim.MUvTemp(:,1), Sim.MUvTemp(:,2), T_L);
+
+
+
+
+
 Pr_L = interp1(Sim.PRvTemp(:,1), Sim.PRvTemp(:,2), T_L);
 
 

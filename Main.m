@@ -74,6 +74,7 @@ FUTURE:
 - Look into Conical Shocks, as opposed to 2D oblique
     See Compressible Flow CH10 by Anderson.
 - Look into more stagnation point, fin LE heating specifically
+-Look for a model for THERMAL CONDUCTIVITY and PRANDTL that captures pressure dependance
 
 %}
 
@@ -83,12 +84,10 @@ clc;
 clear;
 close all;
 
-%Add Relevant Subfolders to Path
-addpath('CSVs')
-addpath('Functions_Arcjet')
-addpath('Functions_Aerothermal')
-addpath('Functions_HiFire')
-addpath('Functions_Pyrolysis')
+%% Add all subfolders to Path
+cd ..                                    %Step up a folder
+addpath(genpath('1DThermal-Ablation'))    %Add 1DThermal-Ablation, and all subfolders, to Matlab Path
+cd 1DThermal-Ablation                              %Return to original directory
 
 
 

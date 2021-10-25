@@ -1,0 +1,36 @@
+### CEA analysis performed on Sun 24-Oct-2021 23:14:45
+
+# Problem Type: "Assigned Temperature and Pressure"  
+
+prob case=_______________5828 tp     
+
+# Pressure (12 values):
+p,bar= 0.528665, 0.57272, 0.616775, 0.66083, 0.704885, 0.74894, 0.792995, 0.83705, 0.881105, 0.92516, 0.969215, 1.01327
+# Temperature (12 values):
+t,k= 1296.8, 1388.2, 1479.6, 1571, 1662.4, 1753.8, 1845.2, 1936.6, 2028, 2119.4, 2210.8, 2302.2
+
+# Oxidizer/Fuel Wt. ratio (1 value):
+o/f= .000001
+
+# You selected the following fuels and oxidizers:
+reac
+fuel N2                wt%= 76.5433 
+fuel O2                wt%= 23.4567 
+oxid O2                wt%=100.0000 
+
+# You selected these options for output:
+# short version of output
+output short 
+# Proportions of any products will be expressed as Mass Fractions.
+output massf
+# Heat will be expressed as siunits
+output siunits
+# Trace variable:
+output trace=1e-10
+# Plot parameters:
+output plot t p rho h s gam u cp
+
+# Input prepared by this script:/var/www/sites/cearun.grc.nasa.gov/cgi-bin/CEARUN/prepareInputFile.cgi
+
+### IMPORTANT:  The following line is the end of your CEA input file!
+end

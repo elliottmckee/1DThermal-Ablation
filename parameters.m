@@ -13,7 +13,7 @@ INPUTS:
     -depthProbe_Temp: Vector containing locations at which to temp probe the
     ablative wall 
     -heatFluxModel is used to set which thermal model is used- Aerothermal
-    or Arcjet
+    or Arcjet Verification case
     -T0 is initial material Temps. Initializes all layers to this temp
     
 
