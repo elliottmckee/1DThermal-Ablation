@@ -35,7 +35,9 @@ NOTES:
 Sim.thermalModel = heatFluxModel; % Set to 'Arcjet' for Arcjet heating Verification Case as opposed to default  'Aerothermal'. 
 
 %Nosecone Angle
-Sim.theta = deg2rad(7); % NOSE CONE HALF ANGLE (7deg for Hifire Minor Axis)
+%Sim.theta = deg2rad(7); % NOSE CONE HALF ANGLE (7deg for Hifire Minor Axis)
+Sim.theta = deg2rad(5); % NOSE CONE HALF ANGLE (Approximating 5 deg for 5:1 VK (accurate-ish in middle of NC))
+
 
 %Air Parameters
 Sim.T0 = T0; % [K] INITIAL AMBIENT TEMP (Initial Ablative+Structural wall temp)
@@ -50,7 +52,7 @@ Sim.C_m = 0.2;
 
 %Grid Definition
 Sim.x = x; %[m] Downstream x location, 
-Sim.N = 26; % NUMBER OF DISCRETE NODES (THROUGH/INTO WALL)
+Sim.N = 46; % NUMBER OF DISCRETE NODES (THROUGH/INTO WALL)
 
 % Air Property Tables:
 %Currently pulling values from Fundamentals of Thermal Fluid Sciences
@@ -62,9 +64,8 @@ Sim.MUvTemp =  [AirProps.Temp, AirProps.mu_kg_mS_]; %[kg/ms]
 Sim.PRvTemp =  [AirProps.Temp, AirProps.Pr]; %[Unitless] 
 
 %Additional Air Enthalpy Lookup Table
-hLUT = readtable('Air_Enthalpy_Table_1bar.csv');
-Sim.hLUT =  [hLUT.T, hLUT.h]; %[]
-
+%hLUT = readtable('Air_Enthalpy_Table_1bar.csv');
+%Sim.hLUT =  [hLUT.T, hLUT.h]; %[]
 
 
 %% WALL STRUCTURE
@@ -77,15 +78,27 @@ if(strcmp(wallType, 'Al6061'))
     Wall.k = 167; %[W/mK]Thermal Conductivity
     
     %Geometric
-    Wall.delta = 0.02; %[m] Wall Thickness
+    Wall.delta = 0.02; %[m] Wall Thickness (HIFIRE)
     
-%If no Structural wall defined
+    
+elseif(strcmp(wallType, 'epoxy_placeholder'))
+    %Very Rough Properties of Epoxy
+    Wall.rho = 1107.2; %[kg/m^3] Aeropoxy Density https://www.aircraftspruce.com/catalog/cmpages/aeropoxy.php 
+    Wall.Cp = 1000; %[J/KgC] Specific Heat of Epoxies https://www.sciencedirect.com/science/article/pii/S1359835X03003440
+    Wall.k = .288; %[W/mK]Thermal Conductivity http://www.matweb.com/search/datasheet_print.aspx?matguid=8337b2d050d44da1b8a9a5e61b0d5f85
+    
+    %Geometric
+    Wall.delta = 0.03; %[m] Wall Thickness OBSIDIAN ROUGH
+    
+    %If no Structural wall defined
 elseif(strcmp(wallType, 'NA'))
     Wall = [];
 else
     error('Unsupported Wall Type')
 end
     
+%Calculate Wall position Vector
+Wall.coords = linspace(0, Wall.delta, Sim.N)
 
 
 %% ABLATIVE PROPERTIES

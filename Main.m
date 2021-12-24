@@ -74,7 +74,7 @@ FUTURE:
 - Look into Conical Shocks, as opposed to 2D oblique
     See Compressible Flow CH10 by Anderson.
 - Look into more stagnation point, fin LE heating specifically
--Look for a model for THERMAL CONDUCTIVITY and PRANDTL that captures pressure dependance
+- Look for a model for THERMAL CONDUCTIVITY and PRANDTL that captures pressure dependance
 
 %}
 
@@ -84,32 +84,35 @@ clc;
 clear;
 close all;
 
+
 %% Add all subfolders to Path
 cd ..                                    %Step up a folder
 addpath(genpath('1DThermal-Ablation'))    %Add 1DThermal-Ablation, and all subfolders, to Matlab Path
 cd 1DThermal-Ablation                              %Return to original directory
 
 
+%% Initial Inputs
+%x = .200; %[m] Downstream X location (Doesn't matter for Arcjet, 200mm for HiFire, 400,650,850mm for HF-5B. See Ulsu)
+x = 0.254; %[10in to m], roughly near front of OBBY NC
+depthProbe_Temp = [];%[0.0222 0.0172 0.0098]; %[m] Specify Ablative Layer Temperature Probe Locations. Leave empty to ignore
+
+%Specify Time Vector
+%t = 0:.001:15; %time vector (Arcjet testcase time vector )
+%t = 0:.004:215; %time vector (Hifire testcase time vector)
+%t = 510:.001:520; %time vector (Hifire-5B time vector)
+t = 0:.001:44; %Obsidian v1.4 O-Motor Vegas
 
 %% INITIALIZE PARAMETER/DATA STRUCTS
-%Inputs
-x = .200; %[m] Downstream X location (Doesn't matter for Arcjet, 200mm for HiFire, 400,650,850mm for HF-5B. See Ulsu)
-depthProbe_Temp = [0.0222 0.0172 0.0098]; %[m] Specify Ablative Layer Temperature Probe Locations. Leave empty to ignore
-
 %Initialize Parameter/Data Structs
-%                                 parameters(location, WallType, AblativeType, simFilePath, depthProbe_Temp, heatingType, intial Temp)
+%[Sim, Wall, Abl, Flight] = parameters(location, WallType, AblativeType, simFilePath, depthProbe_Temp, heatingType, intial Temp)
+
+%%%%%%%%%%%%%%%%%VERIFICATION CASES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %[Sim, Wall, Abl, Flight] = parameters(x, 'NA', 'PICA',  'NA', depthProbe_Temp, 'Arcjet', 280);                 %Arcjet Verification Case
-[Sim, Wall, Abl, Flight] = parameters(x, 'Al6061', 'NA',  'HiFire', depthProbe_Temp, 'Aerothermal', 280);    %Hifire-5 Verification Case
-%[Sim, Wall, Abl, Flight] = parameters(x, 'NA', 'PICA',  'HiFire', depthProbe_Temp, 'Aerothermal', 280); %Other   
-
-
-%% MAIN INTEGRATION LOOP
-%t = 0:.001:15; %time vector (Arcjet testcase time vector )
-t = 0:.004:215; %time vector (Hifire testcase time vector)
-%t = 510:.001:520; %time vector (Hifire-5B time vector)
-
-%Integration loop call
-[Sim, Abl, Wall] = timeIntegration(t, Sim, Wall, Abl, Flight);
+%[Sim, Wall, Abl, Flight] = parameters(x, 'Al6061', 'NA',  'HiFire', depthProbe_Temp, 'Aerothermal', 280);    %Hifire-5 Verification Case
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Obsidian
+[Sim, Wall, Abl, Flight] = parameters(x, 'epoxy_placeholder', 'NA', 'Obsidianv1.4_OmotorVegas.csv', depthProbe_Temp, 'Aerothermal', 280);
+%[Sim, Wall, Abl, Flight] = parameters(x, 'epoxy_placeholder', 'NA', 'Obsidianv1.4_OMotorBurnsimAdjusted.csv', depthProbe_Temp, 'Aerothermal', 280);
 
 
 %% HiFire-5B VERIFICATION TESTCASES
@@ -129,23 +132,52 @@ t = 0:.004:215; %time vector (Hifire testcase time vector)
 % plotting_wall_hifire5B(t, Sim400, Wall400, Sim650, Wall650, Sim800, Wall800, Flight) %HiFire Verification Plotting
 
 
-%% Calculate Total Recession
+
+%% MAIN INTEGRATION LOOP %%%%%%%%%%
+%Integration loop call
+[Sim, Abl, Wall] = timeIntegration(t, Sim, Wall, Abl, Flight);
+
+
+%% PostProcessing 
+%Get total recession of ablative material
 if(~isempty(Abl))
-Recess_tot = Abl.delta0_ab - Abl.deltaVec(end)
+    Recess_tot = Abl.delta0_ab - Abl.deltaVec(end)
 end
 
+%Get time corresponding to Max Hot Wall Temp
+index_maxtemp = find(Wall.TVec(1,:) == max(Wall.TVec(1,:)));
 
-%% Structural Wall Plotting
+
+
+
+
+
+%% Structural Wall Plotting Baseline
 if(~isempty(Wall))
-plotting_wall_hifire(t, Sim, Wall) %HiFire Verification Plotting
-%plotting_wall(t, Sim, Wall)          
+%plotting_wall_hifire(t, Sim, Wall) %HiFire Verification Plotting
+plotting_wall(t, Sim, Wall)          
 end
 
 
-%% Ablative Wall Plotting
+%% Ablative Wall Plotting Baseline
 if(~isempty(Abl))
 plotting_abl_arcjet(t, Sim, Abl, Recess_tot) %Arcjet Verification Plotting
 end
+
+
+
+%% Additional Plotting Section
+
+
+%Temperature Distribution at max temp section
+figure()
+plot(Wall.coords, flip(Wall.TVec(:,index_maxtemp)))
+
+title('Through Wall Temperature Distribution')
+xlabel('Through-Wall Position (m)')
+ylabel('Temperature (K)')
+
+
 
 
 % Additional Plotting Section

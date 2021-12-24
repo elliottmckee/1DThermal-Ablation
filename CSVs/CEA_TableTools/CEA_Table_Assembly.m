@@ -63,7 +63,7 @@ end
 %% Convert to Table, Sort temps
 %This should handle all the sorting needed, as if there is ties in the first column, it sorts using the second
 %column
-Data =  sortrows(struct2table(Data))
+Data =  sortrows(struct2table(Data));
 
 
 %% Partition into AirModel Struct
@@ -71,7 +71,7 @@ Data =  sortrows(struct2table(Data))
 %Temperature Vector
 AirModel.t =  unique(Data.t);
 %Pressure Vector
-AirModel.p = unique(Data.p);
+AirModel.p = unique(Data.p) * 100000; %[BAR to PA]
 
 %Properties
 AirModel.rho = reshape(Data.rho, length(AirModel.t), length(AirModel.p))'; 
@@ -82,11 +82,27 @@ AirModel.u = reshape(Data.u, length(AirModel.t), length(AirModel.p))';
 AirModel.cp = reshape(Data.cp, length(AirModel.t), length(AirModel.p))'; 
 
 
+%% Request Notes on Atmospheric Model
+% AirModel.units = { 'K'; 'Pa'; 'Kg/m^3'; 'KJ/Kg'; 'KJ/KgK'; '-'; 'KJ/Kg'; 'KJ/KgK'}; 
+% 
+% 
+% str = input('Enter any notes relevant to the Atmospheric Model: \n','s');
+% AirModel.notes = str;
+% 
+% 
+% %% Save File
+% save('AirModel_N2_O2only', 'AirModel')
+
+
+%% Load in Previous Data
+
+
 %% Verification plots
 figure()
 
 subplot(2,3,1)
 surface( AirModel.p, AirModel.t, AirModel.rho)
+
 view(3)
 title('Density')
 xlabel('Pres. [bar]')
@@ -128,12 +144,10 @@ xlabel('Pres. [bar]')
 ylabel('Temp [K]')
 
 
-[Xref, Yref] = meshgrid(linspace(AirModel.p(1), AirModel.p(end), 100), linspace(AirModel.t(1), AirModel.t(end), 100))
 
-
-%interp2(AirModel.p, AirModel.t, AirModel.rho, 1.01325, 288, 'spline')
-
-Vq = interp2(AirModel.p, AirModel.t, AirModel.rho, Xref, Yref, 'spline', 10)
+%Refined Spline interpolated version of density
+[Xref, Yref] = meshgrid(linspace(AirModel.p(1), AirModel.p(end), 100), linspace(AirModel.t(1), AirModel.t(end), 100));
+Vq = interp2(AirModel.p, AirModel.t, AirModel.rho, Xref, Yref, 'spline', 10);
 
 figure()
 surface( Xref, Yref, Vq)
