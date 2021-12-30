@@ -168,7 +168,7 @@ Abl.delta0_ab = 27.4e-3; % [m]
         % For Ulsu-Simsek Testcase: 27.4e-3m
     
 % Define Temperature Probe (probes ablative layer for temps at given through-wall distance)
-Abl.tempProbe = []; 
+Abl.tempProbe = [0.0222 0.0172 0.0098]; %[m] Specify Ablative Layer Temperature Probe Locations. Leave empty to ignore
     % TL;DR: Set the desired depths to probe for temperature throughout the flight.
         % "I want to know the temp at .001 meters into the ablative" this is how you do that
         % Leave empty [] if not desired or relevant
