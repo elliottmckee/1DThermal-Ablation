@@ -19,13 +19,6 @@ rho = Wall.rho;
 k = Wall.k;
 
 
-%% Stability Check
-%Numerical Stability Check for Surface Point? Idk its given in [1]
-%DONT THINK WE CAN DO FOR TESTCASE
-%Fo = k*dt/(rho(1) * Cp * dy^2);
-%Bi = 
-
-
 %% Update Temps
 dTdt = zeros(size(TVec));
 %Hot Wall

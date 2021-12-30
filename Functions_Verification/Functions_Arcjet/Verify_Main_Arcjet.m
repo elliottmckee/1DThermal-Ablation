@@ -88,6 +88,10 @@ close all;
 
 %% Add all subfolders to Path
 cd ..                                                          %Step up a folder
+%%%%%%%%%%%ONLY NEEDED FOR EXAMPLE
+cd ..
+cd ..
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath(genpath('1DThermal-Ablation'))    %Add 1DThermal-Ablation, and all subfolders, to Matlab Path
 cd 1DThermal-Ablation                              %Return to original directory
 
@@ -100,7 +104,7 @@ cd 1DThermal-Ablation                              %Return to original directory
 
 %% Setup
 %Specify Configuration Filename to read from. Generate these using generate_config() 
-config_filename = 'Config_Files/Hifire_5/Hifire_5.mat'
+config_filename = 'Config_Files/Arcjet/Arcjet_Verify.mat'
     %This is the name/path that generate_config() will save to, and that sim_initialize will pull from)
 
 % Load in Structs from Config File
@@ -120,86 +124,18 @@ load(config_filename);
 
 
 %% Postprocessing (THIS IS CURRENTLY IN SPAGHETTI MODE- WILL FIX IN A BIT)
-plotting_wall_hifire(Sim.t, Sim, Wall) %HiFire Verification Plotting
-
-
-
-%% PostProcessing 
 %Get total recession of ablative material
 if(~isempty(Abl))
     Recess_tot = Abl.delta0_ab - Abl.deltaVec(end)
 end
-
-%Get time corresponding to Max Hot Wall Temp
-index_maxtemp = find(Wall.TVec(1,:) == max(Wall.TVec(1,:)));
-
-
-
-%% Structural Wall Plotting Baseline
-if(~isempty(Wall))
-plotting_wall_hifire(Sim.t, Sim, Wall) %HiFire Verification Plotting
-plotting_wall(Sim.t, Sim, Wall)          
-end
-
-
-%% Ablative Wall Plotting Baseline
-if(~isempty(Abl))
+%Plotting
 plotting_abl_arcjet(Sim.t, Sim, Abl, Recess_tot)%Arcjet Verification Plotting
-end
-
-
-%% Additional Plotting Section
-%Temperature Distribution at max temp section
-figure()
-plot(Wall.coords, flip(Wall.TVec(:,index_maxtemp)))
-
-title('Through Wall Temperature Distribution')
-xlabel('Through-Wall Position (m)')
-ylabel('Temperature (K)')
-
-
-% Additional Plotting Section
-% 
-% %% Temperature Distribution at specific times
-% %Get indices corresponding to specific times
-% plotInd1 = find( t == 0 )
-% plotInd2 = find( t == 5 )
-% plotInd3= find( t == 10 )
-% plotInd4 = find( t == 20 )
-% 
-% %Get y vector for discretized points 
-% y = linspace(0, Wall.delta, Sim.N)
-% 
-% figure()
-% hold on
-% 
-% plot(y, Wall.TVec(:,plotInd1), 'Color', [0,0,1])
-% plot(y, Wall.TVec(:,plotInd2), 'Color', [0,0,0.5])
-% plot(y, Wall.TVec(:,plotInd3), 'Color', [0.5,0,0])
-% plot(y, Wall.TVec(:,plotInd4), 'Color', [1,0,0])
-% 
-% title('Through Wall Temperature Distribution Plots w/ Time')
-% xlabel('Through Wall Distance (m)')
-% ylabel('Temperatuere (K)')
-% legend('0 Seconds', '5 Seconds', '10 Seconds', '20 Seconds')
-% 
-% 
-% %% Surface Temperature w/ Time
-% 
-% figure()
-% hold on
-% 
-% plot(t, Wall.TVec(1,:), 'r')
-% plot(t, Wall.TVec(end,:), 'b')
-% 
-% 
-% title('Wall Temperatures vs. Time')
-% xlabel('Time (s)')
-% ylabel('Temperatuere (K)')
-% legend('Hot Wall Temp', 'Interior Wall Temp')
 
 
 
 
-
+%% INITIALIZE PARAMETER/DATA STRUCTS
+%%%%%%%%%%%%%%%%%VERIFICATION CASES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%[Sim, Wall, Abl, Flight] = parameters(x, 'NA', 'PICA',  'NA', depthProbe_Temp, 'Arcjet', 280);                 %Arcjet Verification Case
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

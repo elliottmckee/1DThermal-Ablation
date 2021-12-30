@@ -1,4 +1,4 @@
-function [Sim, Abl, Wall] = timeIntegration(t, Sim, Wall, Abl, Flight)
+function [Sim, Abl, Wall] = timeIntegration(Sim, Flight, Wall, Abl)
 %timeIntegration Handles the forward time-stepping, finite difference
 %integration for the wall defined in parameters.m. This should be able to
 %handle Ablative, Structural, and Ablative+Structural wall configurations.
@@ -19,26 +19,10 @@ NOTES:
 %}
 
 
-%% Initialize Vectors
-%Vectors Required for all Analysis
-Sim.q_hwVec = zeros(1,length(t));          %[W.m^2] Hot Wall Heat Flux
+%% Break-out time vector (this is a band-aid fix)
+t = Sim.t;
 
-%Structural Wall Vectors
-if(~isempty(Wall))
-    Wall.TVec = zeros(Sim.N,length(t));                                      %[K] Temperature of Each Structure Wall Element w/ Time
-    Wall.TVec(:,1) = Sim.T0*ones(Sim.N,1);                                   %[K] Initialize Material Temperature at t=0
-end
-
-%Ablative Vectors Initialization
-Abl = initAblate(Sim, Abl, t);
-
-%Other additional vectors for Debugging n whatnot
-Sim.hVec = zeros(1,length(t)); %Heat Transfer Coeff
-Sim.tRecoVec = zeros(1,length(t)); %Recovery Temp
-
-
-%% Calculated Values
-%Timestep size (requires linear timestep)
+%% Timestep size (requires linear timestep)
 dt = t(2)-t(1);
 
 

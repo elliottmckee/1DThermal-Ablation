@@ -34,7 +34,7 @@ F0 = (k_s*dt) / (rho_s * Cp_s * dy^2);
 Bi = (h*dy) / k_s;
 
 if ( F0*(1+Bi) > .5)
-    warning('Stability Criterion not met. Consider Reducing Step Size.')
+    warning('Stability Criterion not met. Consider increasing time resolution (smaller time step) or \n decreasing the spatial wall resolution (decrease the number of wall nodes, Sim.N)')
 end
 
 end

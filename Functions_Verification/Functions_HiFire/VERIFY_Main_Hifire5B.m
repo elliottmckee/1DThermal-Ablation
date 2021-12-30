@@ -88,6 +88,10 @@ close all;
 
 %% Add all subfolders to Path
 cd ..                                                          %Step up a folder
+%%%%%%%%%%%ONLY NEEDED FOR EXAMPLE
+cd ..
+cd ..
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath(genpath('1DThermal-Ablation'))    %Add 1DThermal-Ablation, and all subfolders, to Matlab Path
 cd 1DThermal-Ablation                              %Return to original directory
 
@@ -100,7 +104,7 @@ cd 1DThermal-Ablation                              %Return to original directory
 
 %% Setup
 %Specify Configuration Filename to read from. Generate these using generate_config() 
-config_filename = 'Config_Files/Hifire_5/Hifire_5.mat'
+config_filename = 'Config_Files/Hifire_5B/Hifire_5B_x400mm_T0_368'
     %This is the name/path that generate_config() will save to, and that sim_initialize will pull from)
 
 % Load in Structs from Config File
@@ -116,87 +120,24 @@ load(config_filename);
 % Intialize Simulation Instance/Structures
 [Sim, Flight, Wall, Abl] = sim_initialize(Sim, Flight, Wall, Abl);
 % Run Simulation
-[Sim, Abl, Wall] = timeIntegration(Sim, Flight, Wall, Abl);
+[Sim_400, Abl, Wall_400] = timeIntegration(Sim, Flight, Wall, Abl);
 
 
-%% Postprocessing (THIS IS CURRENTLY IN SPAGHETTI MODE- WILL FIX IN A BIT)
-plotting_wall_hifire(Sim.t, Sim, Wall) %HiFire Verification Plotting
+%% Run Additional Cases for HiFire 5B
+clear Sim Flight Wall Abl
+config_filename = 'Config_Files/Hifire_5B/Hifire_5B_x650mm_T0_361_2'
+load(config_filename);
+[Sim, Flight, Wall, Abl] = sim_initialize(Sim, Flight, Wall, Abl);
+[Sim_650, Abl, Wall_650] = timeIntegration(Sim, Flight, Wall, Abl);
 
+clear Sim Flight Wall Abl
+config_filename = 'Config_Files/Hifire_5B/Hifire_5B_x800mm_T0_360_7'
+load(config_filename);
+[Sim, Flight, Wall, Abl] = sim_initialize(Sim, Flight, Wall, Abl);
+[Sim_800, Abl, Wall_800] = timeIntegration(Sim, Flight, Wall, Abl);
 
-
-%% PostProcessing 
-%Get total recession of ablative material
-if(~isempty(Abl))
-    Recess_tot = Abl.delta0_ab - Abl.deltaVec(end)
-end
-
-%Get time corresponding to Max Hot Wall Temp
-index_maxtemp = find(Wall.TVec(1,:) == max(Wall.TVec(1,:)));
-
-
-
-%% Structural Wall Plotting Baseline
-if(~isempty(Wall))
-plotting_wall_hifire(Sim.t, Sim, Wall) %HiFire Verification Plotting
-plotting_wall(Sim.t, Sim, Wall)          
-end
-
-
-%% Ablative Wall Plotting Baseline
-if(~isempty(Abl))
-plotting_abl_arcjet(Sim.t, Sim, Abl, Recess_tot)%Arcjet Verification Plotting
-end
-
-
-%% Additional Plotting Section
-%Temperature Distribution at max temp section
-figure()
-plot(Wall.coords, flip(Wall.TVec(:,index_maxtemp)))
-
-title('Through Wall Temperature Distribution')
-xlabel('Through-Wall Position (m)')
-ylabel('Temperature (K)')
-
-
-% Additional Plotting Section
-% 
-% %% Temperature Distribution at specific times
-% %Get indices corresponding to specific times
-% plotInd1 = find( t == 0 )
-% plotInd2 = find( t == 5 )
-% plotInd3= find( t == 10 )
-% plotInd4 = find( t == 20 )
-% 
-% %Get y vector for discretized points 
-% y = linspace(0, Wall.delta, Sim.N)
-% 
-% figure()
-% hold on
-% 
-% plot(y, Wall.TVec(:,plotInd1), 'Color', [0,0,1])
-% plot(y, Wall.TVec(:,plotInd2), 'Color', [0,0,0.5])
-% plot(y, Wall.TVec(:,plotInd3), 'Color', [0.5,0,0])
-% plot(y, Wall.TVec(:,plotInd4), 'Color', [1,0,0])
-% 
-% title('Through Wall Temperature Distribution Plots w/ Time')
-% xlabel('Through Wall Distance (m)')
-% ylabel('Temperatuere (K)')
-% legend('0 Seconds', '5 Seconds', '10 Seconds', '20 Seconds')
-% 
-% 
-% %% Surface Temperature w/ Time
-% 
-% figure()
-% hold on
-% 
-% plot(t, Wall.TVec(1,:), 'r')
-% plot(t, Wall.TVec(end,:), 'b')
-% 
-% 
-% title('Wall Temperatures vs. Time')
-% xlabel('Time (s)')
-% ylabel('Temperatuere (K)')
-% legend('Hot Wall Temp', 'Interior Wall Temp')
+%% Postprocessing
+plotting_wall_hifire5B(Sim.t, Sim_400, Wall_400, Sim_650, Wall_650, Sim_800, Wall_800, Flight) %HiFire Verification Plotting
 
 
 
