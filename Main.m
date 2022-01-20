@@ -6,7 +6,7 @@ THIS SCRIPT MODELS THE AERODYNAMIC HEATING WITH OR WITHOUT ABLATION
  FOR A ROCKET NOSECONE OVER A SPECIFIED MACH-ALTITUDE FLIGHT PROFILE. 
 
 THE HEAT TRANSFER SIMULATION IS A ONE-DIMENSIONAL MODEL USING THE FINITE 
-DIFFERENCE METHOD. HEAT TRANSFER IN THE AXIAL DIRECTION IS IGNORED.
+DIFFERENCE METHOD. HEAT TRANSFER IN THE AXIAL/DOWNSTREAM DIRECTION IS IGNORED.
 ---------------------------------------------------------------------------
 AUTHORS: Elliott McKee (elliott.mckee@colorado.edu), 
 COLLABORATORS: Owen Kaufmann
@@ -65,9 +65,8 @@ CURRENTLY:
 - Find ways to verify coupled Aerothermal+Ablation!
 - ASSUMES CONICAL GEOMETRY (can make variable) REMOVED?
 - CHECK DENSITY CHANGE W/ TEMP? (ARRHENIUS ABLATION MODEL)
-    -Seems right as of rn
-- Do we want unit width for exposed surface area? Blowing effect seems dependant on it. ASSUMING UNIT AREA RN
-- Find better fix for clipping extrapolated values
+    -Seems right as of rn, according to Covington Arcjet data
+- Find better fix for clipping extrapolated material property values
 
 
 FUTURE: 
@@ -86,10 +85,12 @@ clear;
 close all;
 
 
+
 %% Add all subfolders to Path
 cd ..                                                          %Step up a folder
 addpath(genpath('1DThermal-Ablation'))    %Add 1DThermal-Ablation, and all subfolders, to Matlab Path
 cd 1DThermal-Ablation                              %Return to original directory
+
 
 
 %% Generate Configuration Files
@@ -98,18 +99,26 @@ cd 1DThermal-Ablation                              %Return to original directory
 %generate_config();
 
 
+
 %% Setup
 %Specify Configuration Filename to read from. Generate these using generate_config() 
-config_filename = 'Config_Files/Hifire_5/Hifire_5.mat'
-    %This is the name/path that generate_config() will save to, and that sim_initialize will pull from)
+%   EX: config_filename = 'Config_Files/Hifire_5/Hifire_5.mat'
+config_filename = 'Config_Files/EXAMPLES/Hifire_5/Hifire_5.mat';
+%Specify output Folder name. The current date/time will be appended to this foldername for uniqueness
+% If you want to overwrite and save to a different directory, you should be able to as well. 
+% EX: output_filename = 'Output_Test'
+output_filename = 'Example_HiFire_5_Out';
+
 
 % Load in Structs from Config File
 load(config_filename);
 
 
+
 %% Overwrite Values
 %If you need to over-write anything in the current configuration, do so here (needs to be done BEFORE sim_initialize())
 %   EXAMLPLES: Sim.x = 0.5; Flight.filepath = 'newtrajectory.csv';
+
 
 
 %% Initialize and Run Simulation
@@ -119,43 +128,38 @@ load(config_filename);
 [Sim, Abl, Wall] = timeIntegration(Sim, Flight, Wall, Abl);
 
 
-%% Postprocessing (THIS IS CURRENTLY IN SPAGHETTI MODE- WILL FIX IN A BIT)
-plotting_wall_hifire(Sim.t, Sim, Wall) %HiFire Verification Plotting
+
+%% Postprocessing (making this more Offical-TM)
+sim_postprocess(config_filename, output_filename, Sim, Flight, Wall, Abl)
 
 
 
-%% PostProcessing 
-%Get total recession of ablative material
-if(~isempty(Abl))
-    Recess_tot = Abl.delta0_ab - Abl.deltaVec(end)
-end
 
-%Get time corresponding to Max Hot Wall Temp
-index_maxtemp = find(Wall.TVec(1,:) == max(Wall.TVec(1,:)));
-
+%% Postprocessing (NEED TO CONSOLIDATE ALL OF THE BELOW INTO A COHESIVE PLOTTING SCRIPT)
+%plotting_wall_hifire(Sim.t, Sim, Wall) %HiFire Verification Plotting
 
 
 %% Structural Wall Plotting Baseline
-if(~isempty(Wall))
-plotting_wall_hifire(Sim.t, Sim, Wall) %HiFire Verification Plotting
-plotting_wall(Sim.t, Sim, Wall)          
-end
+%if(~isempty(Wall))
+%plotting_wall_hifire(Sim.t, Sim, Wall) %HiFire Verification Plotting
+%plotting_wall(Sim.t, Sim, Wall)          
+%end
 
 
 %% Ablative Wall Plotting Baseline
-if(~isempty(Abl))
-plotting_abl_arcjet(Sim.t, Sim, Abl, Recess_tot)%Arcjet Verification Plotting
-end
+%if(~isempty(Abl))
+%plotting_abl_arcjet(Sim.t, Sim, Abl, Recess_tot)%Arcjet Verification Plotting
+%end
 
 
 %% Additional Plotting Section
 %Temperature Distribution at max temp section
-figure()
-plot(Wall.coords, flip(Wall.TVec(:,index_maxtemp)))
+%figure()
+%plot(Wall.coords, flip(Wall.TVec(:,index_maxtemp)))
 
-title('Through Wall Temperature Distribution')
-xlabel('Through-Wall Position (m)')
-ylabel('Temperature (K)')
+%title('Through Wall Temperature Distribution')
+%xlabel('Through-Wall Position (m)')
+%ylabel('Temperature (K)')
 
 
 % Additional Plotting Section

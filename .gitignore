@@ -24,3 +24,13 @@ octave-workspace
 
 # Ignore these Outdated Folders
 1_AblationDocs
+1_Archive
+
+
+# Only Upload Examples from the Config_Files and Output_Files
+# exclude everything from these folders
+Config_Files/*
+Output_Files/*
+# exceptions to the rule
+!Config_Files/EXAMPLES
+!Output_Files/EXAMPLES
